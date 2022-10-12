@@ -10,5 +10,10 @@ var WebRTCConfig = webrtc.Configuration{
 		{
 			URLs: []string{"stun:129.211.18.139:31478"},
 		},
+		{
+			URLs:       []string{"turn:129.211.18.139:31478"},
+			Username:   "szpnygo",
+			Credential: "szpnygo",
+		},
 	},
 }
