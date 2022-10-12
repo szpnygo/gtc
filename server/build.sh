@@ -1,0 +1,1 @@
+gogs go -f data.proto -p github.com/szpnygo/gtc/server

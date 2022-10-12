@@ -91,6 +91,14 @@ var _GTCComponentDesc = component.ComponentDesc{
 			},
 		},
 		{
+			MethodIndex: packet.CreateAction(packet.SystemPacket, 1, 2),
+			FieldType:   reflect.TypeOf(proto.Pong{}),
+			Handler:     nil,
+			FiledHanler: func() interface{} {
+				return new(proto.Pong)
+			},
+		},
+		{
 			MethodIndex: packet.CreateAction(packet.ServicePacket, 1, 1), // 0x810001 8454145
 			FieldType:   reflect.TypeOf(model.Offer{}),
 			Handler:     _GTCComponent_Offer_Handler,

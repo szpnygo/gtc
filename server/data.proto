@@ -45,6 +45,11 @@ message ListRoomResponse {
     repeated string rooms = 1;
 }
 
+message User{
+    int64 id = 1;
+    string name = 2;
+}
+
 // user join some room
 message JoinRoom {
     string room_id = 1;
@@ -56,7 +61,7 @@ message JoinRoom {
 message JoinRoomSuccess {
     string room_id = 1;
     // the users in the room
-    repeated string users = 2;
+    repeated User users = 2;
 }
 
 // @gogs:ServerMessage
@@ -67,7 +72,7 @@ message JoinRoomNotify {
     // the user name who join the room
     string name = 3;
     // the users in the room
-    repeated string users = 4;
+    repeated User users = 4;
 }
 
 message LeaveRoom {
@@ -84,7 +89,7 @@ message LeaveRoomNotify {
     // the user who leave the room
     string name = 3;
     // the users in the room
-    repeated string users = 4;
+    repeated User users = 4;
 }
 
 message ListRoomUsers {
@@ -95,7 +100,7 @@ message ListRoomUsers {
 message ListRoomUsersResponse {
     string room_id = 1;
 
-    repeated string users = 2;
+    repeated User users = 2;
 }
 
 message Offer {

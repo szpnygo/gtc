@@ -23,10 +23,12 @@ import (
 type ClientServer struct {
 	layout        *layout.LayoutManager
 	done          chan struct{}
+	signalingMsg  chan []byte
 	dp            *dispatch.DispatchServer
 	codecHelper   *codec.CodecHelper
 	signalingConn *websocket.Conn
 	clients       map[int64]*p2p.P2PClient
+	users         map[int64]string
 	api           string
 }
 
@@ -36,12 +38,14 @@ func NewClientServer(api string, layout *layout.LayoutManager) *ClientServer {
 	codecHelper := codec.NewCodecHelper(&config.Config{}, dp)
 
 	return &ClientServer{
-		dp:          dp,
-		codecHelper: codecHelper,
-		layout:      layout,
-		done:        make(chan struct{}),
-		clients:     make(map[int64]*p2p.P2PClient),
-		api:         api,
+		dp:           dp,
+		codecHelper:  codecHelper,
+		layout:       layout,
+		done:         make(chan struct{}),
+		signalingMsg: make(chan []byte, 100),
+		clients:      make(map[int64]*p2p.P2PClient),
+		users:        make(map[int64]string),
+		api:          api,
 	}
 }
 
@@ -55,6 +59,8 @@ func (c *ClientServer) Run() {
 		select {
 		case msg := <-writeMessage:
 			c.SendMessage(msg)
+		case data := <-c.signalingMsg:
+			c.parseSignalingMessage(data)
 		case <-c.done:
 			return
 		}
@@ -115,7 +121,7 @@ func (c *ClientServer) readSignalingMessage() {
 			log.GTCLog.Error(err)
 			break
 		}
-		c.parseSignalingMessage(data)
+		c.signalingMsg <- data
 	}
 }
 
@@ -137,6 +143,14 @@ func (c *ClientServer) parseSignalingMessage(data []byte) {
 	} else {
 		log.GTCLog.Errorf("decode %v \n", err)
 	}
+}
+
+func (c *ClientServer) updateUserList(users []*model.User) {
+	list := []string{}
+	for _, u := range users {
+		list = append(list, u.Name)
+	}
+	c.layout.UpdateUserList(list)
 }
 
 func (c *ClientServer) Ping(in *proto.Ping) {
@@ -180,13 +194,14 @@ func (c *ClientServer) JoinRoomSuccess(in *model.JoinRoomSuccess) {
 	log.GTCLog.Info("JoinRoomSuccess")
 	c.layout.UpdateMessageBar(fmt.Sprintf("join room success %s", in.RoomId), "green")
 	c.layout.WriteMessage(c.layout.GetUsername(), "join room")
-	c.layout.UpdateUserList(in.Users)
+	c.updateUserList(in.Users)
 }
 
 func (c *ClientServer) JoinRoomNotify(in *model.JoinRoomNotify) {
+	c.users[in.UserId] = in.Name
 	log.GTCLog.Info("JoinRoomNotify")
 	c.layout.WriteMessage(in.Name, "join room")
-	c.layout.UpdateUserList(in.Users)
+	c.updateUserList(in.Users)
 
 	if client, ok := c.clients[in.UserId]; ok {
 		client.Close()
@@ -207,7 +222,7 @@ func (c *ClientServer) JoinRoomNotify(in *model.JoinRoomNotify) {
 func (c *ClientServer) LeaveRoomNotify(in *model.LeaveRoomNotify) {
 	log.GTCLog.Info("LeaveRoomNotify")
 	c.layout.WriteMessage(in.Name, "leave room")
-	c.layout.UpdateUserList(in.Users)
+	c.updateUserList(in.Users)
 
 	if peer, ok := c.clients[in.UserId]; ok {
 		//delete peer connection

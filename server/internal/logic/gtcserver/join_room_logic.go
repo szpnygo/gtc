@@ -3,6 +3,7 @@ package gtcserver
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/metagogs/gogs/gslog"
@@ -70,13 +71,15 @@ func (l *JoinRoomLogic) Handler(in *model.JoinRoom) {
 
 }
 
-func filterUid(uids []string) []string {
-	var users []string
+func filterUid(uids []string) []*model.User {
+	var users []*model.User
 	for _, uid := range uids {
-		n := strings.Index(uid, "_")
-		if n > 0 {
-			users = append(users, uid[n+1:])
-		}
+		id, _ := strconv.ParseInt(strings.Split(uid, "_")[0], 10, 64)
+		users = append(users, &model.User{
+			Id:   id,
+			Name: strings.Split(uid, "_")[1],
+		})
 	}
+
 	return users
 }
