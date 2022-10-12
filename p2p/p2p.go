@@ -27,6 +27,10 @@ func NewP2PClient(id int64) *P2PClient {
 	}
 }
 
+func (p *P2PClient) GetID() int64 {
+	return p.user_id
+}
+
 func (p *P2PClient) IsOK() bool {
 	return !p.isClosed && p.isConnected && p.isDataChannelOpen
 }
@@ -50,7 +54,7 @@ func (p *P2PClient) OnChange(f func()) {
 func (p *P2PClient) Close() {
 	p.isConnected = false
 	p.isDataChannelOpen = false
-	p.onChange()
+	p.onClose(p.user_id)
 	if p.isClosed {
 		return
 	}
@@ -95,7 +99,7 @@ func (p *P2PClient) Create() error {
 			pcs == webrtc.PeerConnectionStateDisconnected {
 			p.isConnected = false
 			p.isClosed = true
-			p.onClose(p.user_id)
+			p.onChange()
 		}
 
 		if pcs == webrtc.PeerConnectionStateConnected {

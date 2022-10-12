@@ -9,9 +9,10 @@ import (
 	"github.com/szpnygo/gtc/server/model"
 )
 
-func Server() {
+func Server(rooms string) {
 
 	config := config.NewDefaultConfig()
+	// config.Debug = true
 
 	app := gogs.NewApp(config)
 	app.AddAcceptor(acceptor.NewWSAcceptror(&acceptor.AcceptroConfig{
@@ -24,7 +25,7 @@ func Server() {
 		},
 	}))
 
-	ctx := svc.NewServiceContext(app)
+	ctx := svc.NewServiceContext(app, rooms)
 	srv := server.NewServer(ctx)
 
 	model.RegisterAllComponents(app, srv)

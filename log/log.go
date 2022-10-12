@@ -9,7 +9,7 @@ import (
 var GTCLog = logrus.New()
 
 func init() {
-	GTCLog.SetLevel(logrus.ErrorLevel)
+	GTCLog.SetLevel(logrus.FatalLevel)
 	file, err := os.OpenFile("gtc.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err == nil {
 		GTCLog.Out = file

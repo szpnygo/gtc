@@ -21,10 +21,12 @@ import (
 )
 
 type ClientServer struct {
-	api           string
-	layout        *layout.LayoutManager
-	done          chan struct{}
-	signalingMsg  chan []byte
+	api              string
+	layout           *layout.LayoutManager
+	done             chan struct{}
+	readSignalingMsg chan []byte
+	sendSignalingMsg chan any
+
 	dp            *dispatch.DispatchServer
 	codecHelper   *codec.CodecHelper
 	signalingConn *websocket.Conn
@@ -40,14 +42,15 @@ func NewClientServer(api string, layout *layout.LayoutManager) *ClientServer {
 	codecHelper := codec.NewCodecHelper(&config.Config{}, dp)
 
 	return &ClientServer{
-		dp:           dp,
-		codecHelper:  codecHelper,
-		layout:       layout,
-		done:         make(chan struct{}),
-		signalingMsg: make(chan []byte, 100),
-		clients:      make(map[int64]*p2p.P2PClient),
-		users:        make(map[int64]string),
-		api:          api,
+		dp:               dp,
+		codecHelper:      codecHelper,
+		layout:           layout,
+		done:             make(chan struct{}),
+		readSignalingMsg: make(chan []byte, 100),
+		sendSignalingMsg: make(chan any, 100),
+		clients:          make(map[int64]*p2p.P2PClient),
+		users:            make(map[int64]string),
+		api:              api,
 	}
 }
 
@@ -61,8 +64,10 @@ func (c *ClientServer) Run() {
 		select {
 		case msg := <-writeMessage:
 			c.SendMessage(msg)
-		case data := <-c.signalingMsg:
+		case data := <-c.readSignalingMsg:
 			c.parseSignalingMessage(data)
+		case data := <-c.sendSignalingMsg:
+			c.sendSignalingMessage(data)
 		case <-c.done:
 			return
 		}
@@ -100,20 +105,22 @@ func (c *ClientServer) login() {
 	c.signalingConn = conn
 	go c.readSignalingMessage()
 
-	c.sendSignalingMessage(&model.ListRoom{})
+	c.sendSignalingMsg <- &model.ListRoom{}
 }
 
 func (c *ClientServer) joinRoom(leave, join string) {
-	leaveRoom := &model.LeaveRoom{
+	c.layout.UpdateMessageBar("joining room "+join, "green")
+	c.sendSignalingMsg <- &model.LeaveRoom{
 		RoomId: leave,
 		Name:   c.layout.GetUsername(),
 	}
-	c.sendSignalingMessage(leaveRoom)
-	joinRoom := &model.JoinRoom{
+	for _, client := range c.clients {
+		c.deleteClient(client.GetID())
+	}
+	c.sendSignalingMsg <- &model.JoinRoom{
 		RoomId: join,
 		Name:   c.layout.GetUsername(),
 	}
-	c.sendSignalingMessage(joinRoom)
 }
 
 func (c *ClientServer) readSignalingMessage() {
@@ -123,7 +130,7 @@ func (c *ClientServer) readSignalingMessage() {
 			log.GTCLog.Error(err)
 			break
 		}
-		c.signalingMsg <- data
+		c.readSignalingMsg <- data
 	}
 }
 
@@ -162,21 +169,20 @@ func (c *ClientServer) updateUserList(users []*model.User) {
 }
 
 func (c *ClientServer) Ping(in *proto.Ping) {
-	c.sendSignalingMessage(&proto.Pong{})
+	c.sendSignalingMsg <- &proto.Pong{}
 }
 
 func (c *ClientServer) Offer(in *model.Offer) {
 	if client, ok := c.clients[in.UserId]; ok {
-		client.Close()
-		delete(c.clients, in.UserId)
+		c.deleteClient(client.GetID())
 	}
 	if client, err := c.CreateClient(in.UserId); err == nil {
 		if answer, err := client.CreateAnswer([]byte(in.Data)); err == nil {
-			c.sendSignalingMessage(&model.Answer{
+			c.sendSignalingMsg <- &model.Answer{
 				UserId: in.UserId,
 				Data:   string(answer),
-			})
-			c.clients[in.UserId] = client
+			}
+			c.addClient(in.UserId, client)
 		}
 	}
 }
@@ -213,17 +219,16 @@ func (c *ClientServer) JoinRoomNotify(in *model.JoinRoomNotify) {
 	c.updateUserList(in.Users)
 
 	if client, ok := c.clients[in.UserId]; ok {
-		client.Close()
-		delete(c.clients, in.UserId)
+		c.deleteClient(client.GetID())
 	}
 
 	if client, err := c.CreateClient(in.UserId); err == nil {
 		if offer, err := client.CreateOffer(); err == nil {
-			c.sendSignalingMessage(&model.Offer{
+			c.sendSignalingMsg <- &model.Offer{
 				UserId: in.UserId,
 				Data:   string(offer),
-			})
-			c.clients[in.UserId] = client
+			}
+			c.addClient(in.UserId, client)
 		}
 	}
 }
@@ -233,11 +238,7 @@ func (c *ClientServer) LeaveRoomNotify(in *model.LeaveRoomNotify) {
 	c.layout.WriteMessage(in.Name, "leave room")
 	c.updateUserList(in.Users)
 
-	if peer, ok := c.clients[in.UserId]; ok {
-		//delete peer connection
-		peer.Close()
-		delete(c.clients, in.UserId)
-	}
+	c.deleteClient(in.UserId)
 }
 
 func (c *ClientServer) ListRoomUsersResponse(in *model.ListRoomUsersResponse) {
@@ -249,10 +250,10 @@ func (c *ClientServer) CreateClient(id int64) (*p2p.P2PClient, error) {
 		return nil, err
 	}
 	client.OnCandidate(func(id int64, s string) {
-		c.sendSignalingMessage(&model.Candidate{
+		c.sendSignalingMsg <- &model.Candidate{
 			UserId:    id,
 			Candidate: s,
-		})
+		}
 	})
 	client.OnMessage(func(b []byte) {
 		var msg model.Message
@@ -261,12 +262,25 @@ func (c *ClientServer) CreateClient(id int64) (*p2p.P2PClient, error) {
 		}
 	})
 	client.OnClose(func(id int64) {
-		client.Close()
 		delete(c.clients, id)
+		c.layout.UpdateOnlineCount(len(c.clients))
 	})
 	client.OnChange(func() {
 		c.updateUserList(c.cacheUsers)
 	})
 
 	return client, nil
+}
+
+func (c *ClientServer) addClient(id int64, client *p2p.P2PClient) {
+	c.clients[id] = client
+	c.layout.UpdateOnlineCount(len(c.clients))
+}
+
+func (c *ClientServer) deleteClient(id int64) {
+	if peer, ok := c.clients[id]; ok {
+		go peer.Close()
+	}
+	delete(c.clients, id)
+	c.layout.UpdateOnlineCount(len(c.clients))
 }

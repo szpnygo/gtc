@@ -163,9 +163,8 @@ func (lm *LayoutManager) infoView(g *gocui.Gui) error {
 	}
 	v.Title = " Info "
 	fmt.Fprintf(v, "Name: %s\n", lm.GetUsername())
-	fmt.Fprintf(v, "Users: %d\n", lm.onlineCount)
 	fmt.Fprintf(v, "PeerConnections: %d\n", lm.onlineCount)
-	fmt.Fprintf(v, "\nTab to switch window\n")
+	fmt.Fprintf(v, "\n\nTab to switch window\n")
 
 	return nil
 }
@@ -419,11 +418,11 @@ func (lm *LayoutManager) UpdateSelectedRoom(g *gocui.Gui, room string) error {
 	}
 	v.Clear()
 
+	lm.onJoinRoomEvent(oldRoom, lm.currentRoom)
+
 	if v, err := g.View("users"); err == nil {
 		v.Clear()
 	}
-
-	lm.onJoinRoomEvent(oldRoom, lm.currentRoom)
 
 	return nil
 }
@@ -452,7 +451,20 @@ func (lm *LayoutManager) UpdateMessageBar(msg string, color string) {
 }
 
 func (lm *LayoutManager) UpdateOnlineCount(c int) {
+	if lm.onlineCount == c {
+		return
+	}
 	lm.onlineCount = c
+	lm.g.Update(func(g *gocui.Gui) error {
+		if v, err := g.View("info"); err == nil {
+			v.Clear()
+			fmt.Fprintf(v, "Name: %s\n", lm.GetUsername())
+			fmt.Fprintf(v, "PeerConnections: %d\n", lm.onlineCount)
+			fmt.Fprintf(v, "\n\nTab to switch window\n")
+			log.GTCLog.Info("UpdateOnlineCount: ", lm.onlineCount)
+		}
+		return nil
+	})
 }
 
 func (lm *LayoutManager) UpdateRoomList(rooms []string) {
