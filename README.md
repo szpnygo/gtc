@@ -1,4 +1,11 @@
 # gtc: Golang Terminal Chat
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/szpnygo/gtc)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/szpnygo/gtc?label=version)
+![Docker Image Version (latest by date)](https://img.shields.io/docker/v/neosu/gtc?label=docker%20version)
+![GitHub last commit](https://img.shields.io/github/last-commit/szpnygo/gtc)
+![GitHub Release Date](https://img.shields.io/github/release-date/szpnygo/gtc)
+![GitHub issues](https://img.shields.io/github/issues-raw/szpnygo/gtc)
+![GitHub top language](https://img.shields.io/github/languages/top/szpnygo/gtc)
 
 gtc is a p2p terminal chat app, using webrtc. All conversation content will not pass through the server.
 
@@ -11,7 +18,7 @@ gtc is a p2p terminal chat app, using webrtc. All conversation content will not 
 ### Install
 
 ```bash
-go install github.com/szpnygo/gtc@v0.0.1
+go install github.com/szpnygo/gtc@v0.2.0
 ```
 
 or you can download from release
