@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"reflect"
 
 	"github.com/gorilla/websocket"
 	"github.com/metagogs/gogs/codec"
@@ -124,13 +125,17 @@ func (c *ClientServer) sendSignalingMessage(in any) {
 			log.GTCLog.Error(err)
 		}
 	} else {
-		log.GTCLog.Error(err)
+		log.GTCLog.Errorf("encode %s %v \n", reflect.TypeOf(in).Elem().Name(), err)
 	}
 }
 
 func (c *ClientServer) parseSignalingMessage(data []byte) {
 	if packet, err := c.codecHelper.Decode(data); err == nil {
-		_ = c.dp.Call(context.Background(), nil, packet)
+		if err := c.dp.Call(context.Background(), nil, packet); err != nil {
+			log.GTCLog.Error(err)
+		}
+	} else {
+		log.GTCLog.Errorf("decode %v \n", err)
 	}
 }
 
