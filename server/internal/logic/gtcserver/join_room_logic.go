@@ -63,7 +63,7 @@ func (l *JoinRoomLogic) Handler(in *model.JoinRoom) {
 			session.BroadcastMessage(users, &model.LeaveRoomNotify{
 				RoomId: group.GetGroupName(l.ctx),
 				Name:   in.Name,
-				Users:  group.GetUsers(l.ctx),
+				Users:  filterUid(group.GetUsers(l.ctx)),
 			}, nil)
 		})
 	}
