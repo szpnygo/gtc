@@ -43,5 +43,5 @@ changelog:
 
 dockers:
   - image_templates:
-      - 'neosu/{{ .ProjectName }}:{{ .Version }}'
+      - 'neosu/{{ .ProjectName }}:v{{ .Version }}'
       - 'neosu/{{ .ProjectName }}:latest'
