@@ -12,6 +12,7 @@ import (
 	"github.com/metagogs/gogs/proto"
 	"github.com/pterm/pterm"
 	"github.com/szpnygo/gtc/client/layout"
+	"github.com/szpnygo/gtc/log"
 	"github.com/szpnygo/gtc/p2p"
 	"github.com/szpnygo/gtc/server/model"
 
@@ -79,6 +80,10 @@ func (c *ClientServer) Stop() {
 func (c *ClientServer) login() {
 	// connect to signaling server
 	conn, _, err := websocket.DefaultDialer.Dial(fmt.Sprintf("%s/gtc", c.api), nil)
+	conn.SetCloseHandler(func(code int, text string) error {
+		c.layout.UpdateMessageBar(fmt.Sprintf("websocket connection closed %d %s", code, text), "red")
+		return nil
+	})
 	if err != nil {
 		pterm.Error.Println(err)
 		panic(err)
@@ -106,6 +111,7 @@ func (c *ClientServer) readSignalingMessage() {
 	for {
 		_, data, err := c.signalingConn.ReadMessage()
 		if err != nil {
+			log.GTCLog.Error(err)
 			break
 		}
 		c.parseSignalingMessage(data)
@@ -114,7 +120,11 @@ func (c *ClientServer) readSignalingMessage() {
 
 func (c *ClientServer) sendSignalingMessage(in any) {
 	if data, err := c.codecHelper.Encode(in); err == nil {
-		_ = c.signalingConn.WriteMessage(websocket.BinaryMessage, data.ToData().B)
+		if err := c.signalingConn.WriteMessage(websocket.BinaryMessage, data.ToData().B); err != nil {
+			log.GTCLog.Error(err)
+		}
+	} else {
+		log.GTCLog.Error(err)
 	}
 }
 
@@ -157,16 +167,19 @@ func (c *ClientServer) Candidate(in *model.Candidate) {
 }
 
 func (c *ClientServer) ListRoomResponse(in *model.ListRoomResponse) {
+	log.GTCLog.Info("ListRoomResponse")
 	c.layout.UpdateRoomList(in.Rooms)
 }
 
 func (c *ClientServer) JoinRoomSuccess(in *model.JoinRoomSuccess) {
-	c.layout.UpdateMessageBar("join room success", "green")
+	log.GTCLog.Info("JoinRoomSuccess")
+	c.layout.UpdateMessageBar(fmt.Sprintf("join room success %s", in.RoomId), "green")
 	c.layout.WriteMessage(c.layout.GetUsername(), "join room")
 	c.layout.UpdateUserList(in.Users)
 }
 
 func (c *ClientServer) JoinRoomNotify(in *model.JoinRoomNotify) {
+	log.GTCLog.Info("JoinRoomNotify")
 	c.layout.WriteMessage(in.Name, "join room")
 	c.layout.UpdateUserList(in.Users)
 
@@ -187,6 +200,7 @@ func (c *ClientServer) JoinRoomNotify(in *model.JoinRoomNotify) {
 }
 
 func (c *ClientServer) LeaveRoomNotify(in *model.LeaveRoomNotify) {
+	log.GTCLog.Info("LeaveRoomNotify")
 	c.layout.WriteMessage(in.Name, "leave room")
 	c.layout.UpdateUserList(in.Users)
 

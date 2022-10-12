@@ -162,5 +162,7 @@ func (p *P2PClient) OnICECandidate(candidate []byte) error {
 }
 
 func (p *P2PClient) SendMessage(msg []byte) {
-	_ = p.dataChannel.Send(msg)
+	if err := p.dataChannel.Send(msg); err != nil {
+		log.GTCLog.Error(err)
+	}
 }

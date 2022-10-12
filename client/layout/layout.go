@@ -425,6 +425,7 @@ func (lm *LayoutManager) UpdateSelectedRoom(g *gocui.Gui, room string) error {
 }
 
 func (lm *LayoutManager) UpdateMessageBar(msg string, color string) {
+	log.GTCLog.Warning(msg)
 	colorNum := 31
 	switch color {
 	case "green":
