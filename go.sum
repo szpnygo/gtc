@@ -232,8 +232,8 @@ github.com/mattn/go-runewidth v0.0.9/go.mod h1:H031xJmbD/WCDINGzjvQ9THkh0rPKHF+m
 github.com/mattn/go-runewidth v0.0.13/go.mod h1:Jdepj2loyihRzMpdS35Xk/zdY8IAYHsh153qUoGf23w=
 github.com/mattn/go-runewidth v0.0.14 h1:+xnbZSEeDbOIg5/mE6JF0w6n9duR1l3/WmbinWVwUuU=
 github.com/mattn/go-runewidth v0.0.14/go.mod h1:Jdepj2loyihRzMpdS35Xk/zdY8IAYHsh153qUoGf23w=
-github.com/metagogs/gogs v0.1.3 h1:btu/hC1y/rLgqORjDcJy1zkKVxpHBMWKwQQ1UMKSP0A=
-github.com/metagogs/gogs v0.1.3/go.mod h1:3JlhKCf2doO4icilupa56J2yuzQSKzo3QeNQ7syHbdM=
+github.com/metagogs/gogs v0.1.4 h1:Mqbk/rzabfjJ2UG9dgm1buLEpAe4OwBVtv3HV8wY+gE=
+github.com/metagogs/gogs v0.1.4/go.mod h1:yUr+u6FRemVcHv5xhvGL868f+mYIdG7R2dta57atyJo=
 github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyuac5Z2hdY=
 github.com/mitchellh/mapstructure v1.5.0/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
 github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
