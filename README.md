@@ -30,5 +30,9 @@ gtc server -r golang,movie,meta,job,tech,idea
 gtc -s ws://127.0.0.1:8888
 ```
 
+### Docker
+
+[Docker](https://hub.docker.com/r/neosu/gtc)
+
 ## License
 [Apache License Version 2.0](./LICENSE)
