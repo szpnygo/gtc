@@ -1,0 +1,108 @@
+run:
+  go: '1.19'
+  timeout: 30m
+  skip-dirs:
+    - .cache
+    - gocui
+  skip-files:
+    - ".*pb\\.go"
+  tests: false
+
+issues:
+  max-same-issues: 200
+
+linters:
+  disable-all: true
+  enable:
+    # 必须
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - bodyclose
+    - durationcheck
+    - exportloopref
+    - gomodguard
+    - depguard
+    - gosec
+
+    # 建议
+    - gosimple
+    - decorder
+    - dogsled
+    - errchkjson
+    - errorlint
+    - goprintffuncname
+    - makezero
+    - misspell
+    - nakedret
+    - nestif
+    - nilerr # 后期建议放入，所有err均需要有处理
+    - nilnil
+    - noctx
+    - unconvert
+linters-settings:
+  gosec:
+    excludes:
+      - G401
+      - G505
+      - G501
+      - G402
+      - G204
+      - G101
+      - G107
+      - G114
+
+  gosimple:
+    go: "1.19"
+    checks: ["all", "-SA1019", "-S1039", "-S1025", "-S1008"]
+  staticcheck:
+    go: "1.19"
+    checks: ["all", "-SA5008", "-SA9003", "-SA1029", "-SA4006"]
+  errcheck:
+    check-type-assertions: true
+    check-blank: false
+  revie:
+    enable-all-rules: true
+    ignore-generated-header: true
+    rules:
+      - name: var-naming
+        disabled: true
+  govet:
+    disable-all: true
+    enable:
+      - asmdecl
+      - assign
+      - atomic
+      - atomicalign
+      - bools
+      - buildtag
+      - cgocall
+      - composites
+      - copylocks
+      - deepequalerrors
+      - errorsas
+      - findcall
+      - framepointer
+      - httpresponse
+      - ifaceassert
+      - loopclosure
+      - lostcancel
+      - nilfunc
+      - nilness
+      - printf
+      - reflectvaluecompare
+      # - shadow
+      - shift
+      - sigchanyzer
+      - sortslice
+      - stdmethods
+      - stringintconv
+      - structtag
+      - testinggoroutine
+      - tests
+      - unmarshal
+      - unreachable
+      - unsafeptr
+      - unusedresult
+      # - unusedwrite

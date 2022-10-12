@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: turn
+  namespace: coturn
+  labels:
+    app: turn
+spec:
+  selector:
+    matchLabels:
+      app: turn
+  template:
+    metadata:
+      labels:
+        app: turn
+    spec:
+      containers:
+        - name: turn
+          image: coturn/coturn:4.6
+          ports:
+            - name: turn-udp
+              hostPort: 31478
+              containerPort: 31478
+              protocol: UDP
+            - name: turn-tcp
+              hostPort: 31478
+              containerPort: 31478
+              protocol: TCP
+          env:
+            - name: INTERNAL_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: TURN_PORT
+              value: '3478'
+            - name: TURN_MIN_PORT
+              value: '49152'
+            - name: TURN_MAX_PORT
+              value: '65535'
+            - name: TURN_REALM
+              value: szpnygo
+            - name: TURN_USER
+              value: szpnygo
+            - name: TURN_PASS
+              value: szpnygo
+          resources: {}
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: false
+      restartPolicy: Always
+      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      securityContext: {}

@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package model;
+option go_package = "/model";
+
+// the Main Components
+// only have one, include some child componetns
+// all the message in this struct is the componetns
+// @gogs:Components
+message Components {
+    // don't care the filed name, we never use it
+    // but you should be careful about the filed number
+    GTCServer GTCServer = 1;
+}
+
+message Message {
+    string name = 1;
+
+    string data = 2;
+}
+
+// componetns, 
+// all the messages are used for communication between the client and the server
+message GTCServer {
+    Offer Offer = 1;
+    Answer Answer = 2;
+    Candidate Candidate = 3;
+    ListRoom ListRoom = 4;
+    ListRoomResponse ListRoomResponse = 5;
+    JoinRoom JoinRoom = 6;
+    JoinRoomSuccess JoinRoomSuccess = 7;
+    JoinRoomNotify JoinRoomNotify = 8;
+    LeaveRoom LeaveRoom = 9;
+    LeaveRoomNotify LeaveRoomNotify = 10;
+    ListRoomUsers ListRoomUsers = 11;
+    ListRoomUsersResponse ListRoomUsersResponse = 12;
+}
+
+message ListRoom {
+
+}
+
+// @gogs:ServerMessage
+message ListRoomResponse {
+    repeated string rooms = 1;
+}
+
+// user join some room
+message JoinRoom {
+    string room_id = 1;
+
+    string name = 2;
+}
+
+// @gogs:ServerMessage
+message JoinRoomSuccess {
+    string room_id = 1;
+    // the users in the room
+    repeated string users = 2;
+}
+
+// @gogs:ServerMessage
+message JoinRoomNotify {
+    string room_id = 1;
+
+    int64 user_id = 2;
+    // the user name who join the room
+    string name = 3;
+    // the users in the room
+    repeated string users = 4;
+}
+
+message LeaveRoom {
+    string room_id = 1;
+
+    string name = 2;
+}
+
+// @gogs:ServerMessage
+message LeaveRoomNotify {
+    string room_id = 1;
+
+    int64 user_id = 2;
+    // the user who leave the room
+    string name = 3;
+    // the users in the room
+    repeated string users = 4;
+}
+
+message ListRoomUsers {
+    string room_id = 1;
+}
+
+// @gogs:ServerMessage
+message ListRoomUsersResponse {
+    string room_id = 1;
+
+    repeated string users = 2;
+}
+
+message Offer {
+    string data = 1;
+
+    int64 user_id = 2;
+}
+
+message Answer {
+    string data = 1;
+
+    int64 user_id = 2;
+}
+
+message Candidate {
+    string candidate = 1;
+    
+    int64 user_id = 2;
+}

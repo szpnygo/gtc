@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    description: gtc
+  labels:
+    k8s-app: gtc
+  name: gtc
+  namespace: gtc
+spec:
+  selector:
+    matchLabels:
+      k8s-app: gtc
+  template:
+    metadata:
+      labels:
+        k8s-app: gtc
+    spec:
+      containers:
+      - args:
+        - server
+        command:
+        - /app/gtc
+        image: neosu/gtc
+        imagePullPolicy: Always
+        name: gtc
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1Gi
+          requests:
+            cpu: 10m
+            memory: 32Mi
+      dnsPolicy: ClusterFirst
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: gtc
+  name: gtc
+  namespace: gtc
+spec:
+  ports:
+  - name: 8888-30101-tcp
+    nodePort: 30101
+    port: 30101
+    protocol: TCP
+    targetPort: 8888
+  selector:
+    k8s-app: gtc
+  sessionAffinity: None
+  type: NodePort
+
