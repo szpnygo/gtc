@@ -48,6 +48,7 @@ func (l *JoinRoomLogic) Handler(in *model.JoinRoom) {
 
 		_ = message.SendJoinRoomSuccess(l.session, &model.JoinRoomSuccess{
 			RoomId: group.GetGroupName(l.ctx),
+			UserId: l.session.ID(),
 			Users:  usersFilted,
 		})
 

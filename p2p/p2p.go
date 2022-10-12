@@ -8,20 +8,27 @@ import (
 )
 
 type P2PClient struct {
-	peerConnection *webrtc.PeerConnection
-	dataChannel    *webrtc.DataChannel
-	isClosed       bool
-	user_id        int64
+	peerConnection    *webrtc.PeerConnection
+	dataChannel       *webrtc.DataChannel
+	isClosed          bool
+	isConnected       bool
+	isDataChannelOpen bool
+	user_id           int64
 
 	onClose     func(int64)
 	onCandidate func(int64, string)
 	onMessage   func([]byte)
+	onChange    func()
 }
 
 func NewP2PClient(id int64) *P2PClient {
 	return &P2PClient{
 		user_id: id,
 	}
+}
+
+func (p *P2PClient) IsOK() bool {
+	return !p.isClosed && p.isConnected && p.isDataChannelOpen
 }
 
 func (p *P2PClient) OnClose(f func(int64)) {
@@ -36,13 +43,37 @@ func (p *P2PClient) OnMessage(f func([]byte)) {
 	p.onMessage = f
 }
 
+func (p *P2PClient) OnChange(f func()) {
+	p.onChange = f
+}
+
 func (p *P2PClient) Close() {
+	p.isConnected = false
+	p.isDataChannelOpen = false
+	p.onChange()
 	if p.isClosed {
 		return
 	}
 	if err := p.peerConnection.Close(); err == nil {
 		p.isClosed = true
 	}
+}
+
+func (p *P2PClient) createDataChannelEvent() {
+	p.dataChannel.OnOpen(func() {
+		p.isDataChannelOpen = true
+		p.onChange()
+	})
+	p.dataChannel.OnMessage(func(msg webrtc.DataChannelMessage) {
+		p.onMessage(msg.Data)
+	})
+	p.dataChannel.OnClose(func() {
+		p.isDataChannelOpen = false
+		p.onChange()
+	})
+	p.dataChannel.OnError(func(err error) {
+		log.GTCLog.Error(err)
+	})
 }
 
 // Create create webrtc peerconnection
@@ -55,14 +86,22 @@ func (p *P2PClient) Create() error {
 
 	peerConnection.OnDataChannel(func(dc *webrtc.DataChannel) {
 		p.dataChannel = dc
-		dc.OnMessage(func(msg webrtc.DataChannelMessage) {
-			p.onMessage(msg.Data)
-		})
+		p.createDataChannelEvent()
 	})
 
 	peerConnection.OnConnectionStateChange(func(pcs webrtc.PeerConnectionState) {
-		if pcs == webrtc.PeerConnectionStateFailed {
+		if pcs == webrtc.PeerConnectionStateFailed ||
+			pcs == webrtc.PeerConnectionStateClosed ||
+			pcs == webrtc.PeerConnectionStateDisconnected {
+			p.isConnected = false
+			p.isClosed = true
 			p.onClose(p.user_id)
+		}
+
+		if pcs == webrtc.PeerConnectionStateConnected {
+			p.isConnected = true
+			p.isClosed = false
+			p.onChange()
 		}
 	})
 
@@ -85,9 +124,7 @@ func (p *P2PClient) CreateOffer() ([]byte, error) {
 		return nil, err
 	}
 	p.dataChannel = dataChannel
-	p.dataChannel.OnMessage(func(msg webrtc.DataChannelMessage) {
-		p.onMessage(msg.Data)
-	})
+	p.createDataChannelEvent()
 
 	offer, err := p.peerConnection.CreateOffer(nil)
 	if err != nil {

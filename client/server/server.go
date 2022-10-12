@@ -21,6 +21,7 @@ import (
 )
 
 type ClientServer struct {
+	api           string
 	layout        *layout.LayoutManager
 	done          chan struct{}
 	signalingMsg  chan []byte
@@ -29,7 +30,8 @@ type ClientServer struct {
 	signalingConn *websocket.Conn
 	clients       map[int64]*p2p.P2PClient
 	users         map[int64]string
-	api           string
+	cacheUsers    []*model.User
+	currentUserID int64
 }
 
 func NewClientServer(api string, layout *layout.LayoutManager) *ClientServer {
@@ -146,9 +148,15 @@ func (c *ClientServer) parseSignalingMessage(data []byte) {
 }
 
 func (c *ClientServer) updateUserList(users []*model.User) {
+	c.cacheUsers = users
 	list := []string{}
 	for _, u := range users {
-		list = append(list, u.Name)
+		client, ok := c.clients[u.Id]
+		if ok && client.IsOK() || u.Id == c.currentUserID {
+			list = append(list, fmt.Sprintf("<---> %s", u.Name))
+		} else {
+			list = append(list, fmt.Sprintf("<-x-> %s", u.Name))
+		}
 	}
 	c.layout.UpdateUserList(list)
 }
@@ -192,6 +200,7 @@ func (c *ClientServer) ListRoomResponse(in *model.ListRoomResponse) {
 
 func (c *ClientServer) JoinRoomSuccess(in *model.JoinRoomSuccess) {
 	log.GTCLog.Info("JoinRoomSuccess")
+	c.currentUserID = in.UserId
 	c.layout.UpdateMessageBar(fmt.Sprintf("join room success %s", in.RoomId), "green")
 	c.layout.WriteMessage(c.layout.GetUsername(), "join room")
 	c.updateUserList(in.Users)
@@ -254,6 +263,9 @@ func (c *ClientServer) CreateClient(id int64) (*p2p.P2PClient, error) {
 	client.OnClose(func(id int64) {
 		client.Close()
 		delete(c.clients, id)
+	})
+	client.OnChange(func() {
+		c.updateUserList(c.cacheUsers)
 	})
 
 	return client, nil

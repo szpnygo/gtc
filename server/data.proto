@@ -60,8 +60,10 @@ message JoinRoom {
 // @gogs:ServerMessage
 message JoinRoomSuccess {
     string room_id = 1;
+
+    int64 user_id = 2;
     // the users in the room
-    repeated User users = 2;
+    repeated User users = 3;
 }
 
 // @gogs:ServerMessage

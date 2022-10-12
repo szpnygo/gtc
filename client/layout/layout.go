@@ -419,6 +419,10 @@ func (lm *LayoutManager) UpdateSelectedRoom(g *gocui.Gui, room string) error {
 	}
 	v.Clear()
 
+	if v, err := g.View("users"); err == nil {
+		v.Clear()
+	}
+
 	lm.onJoinRoomEvent(oldRoom, lm.currentRoom)
 
 	return nil
