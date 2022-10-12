@@ -30,7 +30,7 @@ gtc -s wss://gogs.tcodestudio.com
 
 ### Use your own service
 ```bash
-gtc server
+gtc server -r golang,movie,meta,job,tech,idea
 gtc -s ws://127.0.0.1:8888
 ```
 

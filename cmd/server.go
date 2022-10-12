@@ -5,8 +5,13 @@ import (
 	"github.com/szpnygo/gtc/server"
 )
 
+var (
+	rooms string
+)
+
 func init() {
 	RootCmd.AddCommand(serverCmd)
+	serverCmd.Flags().StringVarP(&rooms, "rooms", "r", "", "room list split by comma")
 }
 
 var serverCmd = &cobra.Command{
@@ -14,6 +19,6 @@ var serverCmd = &cobra.Command{
 	Short: "gtc server",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		server.Server()
+		server.Server(rooms)
 	},
 }
