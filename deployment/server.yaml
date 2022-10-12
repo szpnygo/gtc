@@ -19,6 +19,8 @@ spec:
       containers:
       - args:
         - server
+        - -r
+        - golang,movie,meta,job,tech,idea
         command:
         - /app/gtc
         image: neosu/gtc

@@ -9,16 +9,12 @@
 
 gtc is a p2p terminal chat app, using webrtc. All conversation content will not pass through the server.
 
-## TODO
-- [ ] Support config the ice server
-- [ ] Room list shows the number of people online
-
 ## Getting Started
 
 ### Install
 
 ```bash
-go install github.com/szpnygo/gtc@v0.2.1
+go install github.com/szpnygo/gtc@v0.2.2
 ```
 
 or you can download from release
