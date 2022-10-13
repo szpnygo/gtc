@@ -11,12 +11,6 @@ import (
 )
 
 var data = `　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
-　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
-　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
-　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
-　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
-　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
-　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　◆　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　◆◆　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
 　　　　　　　　　◆◆◆◆◆◆　　　　　　　　　　　　　　　　　　　◆◆◆　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
@@ -236,7 +230,7 @@ func (lm *LayoutManager) loginView(g *gocui.Gui) error {
 
 	}
 
-	if v, err := g.SetView("logo", lm.width/2-40, 2, lm.width/2+40, 30); err != nil {
+	if v, err := g.SetView("logo", lm.width/2-37, 1, lm.width/2+37, 20); err != nil {
 		if !errors.Is(err, gocui.ErrUnknownView) {
 			return err
 		}
@@ -247,7 +241,7 @@ func (lm *LayoutManager) loginView(g *gocui.Gui) error {
 		v.Rewind()
 	}
 
-	if v, err := g.SetView("login_input", lm.width/2-30, 32, lm.width/2+30, 34); err != nil {
+	if v, err := g.SetView("login_input", lm.width/2-30, 21, lm.width/2+30, 23); err != nil {
 		if !errors.Is(err, gocui.ErrUnknownView) {
 			return err
 		}
