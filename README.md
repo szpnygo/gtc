@@ -31,6 +31,12 @@ gtc server -r golang,movie,meta,job,tech,idea
 gtc -s ws://127.0.0.1:8888
 ```
 
+###
+
+gtc server use the gogs framework
+
+[gogs](https://github.com/metagogs/gogs)
+
 ### Docker
 
 [Docker](https://hub.docker.com/r/neosu/gtc)
