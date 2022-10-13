@@ -114,7 +114,7 @@ func (lm *LayoutManager) mainLayout(g *gocui.Gui) error {
 }
 
 func (lm *LayoutManager) messageBarLayout(g *gocui.Gui) error {
-	v, err := g.SetView("bar", 0, 0, lm.width, 2)
+	v, err := g.SetView("bar", 0, 0, lm.width-2, 2)
 	if err == nil {
 		return nil
 	}
