@@ -9,6 +9,7 @@
 
 gtc is a p2p terminal chat app, using webrtc. All conversation content will not pass through the server.
 
+![image](preview.png)
 ## Getting Started
 
 ### Install
