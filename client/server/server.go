@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"reflect"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/metagogs/gogs/codec"
@@ -82,7 +83,9 @@ func (c *ClientServer) SendMessage(msg string) {
 	}
 	if data, err := gproto.Marshal(message); err == nil {
 		for _, c := range c.clients {
-			c.SendMessage(data)
+			if c.IsOK() {
+				c.SendMessage(data)
+			}
 		}
 	}
 }
@@ -94,7 +97,12 @@ func (c *ClientServer) Stop() {
 func (c *ClientServer) login() {
 	// connect to signaling server
 	conn, _, err := websocket.DefaultDialer.Dial(fmt.Sprintf("%s/gtc", c.api), nil)
+	if err != nil {
+		c.layout.UpdateMessageBar(fmt.Sprintf("connect signaling server error %v ", err), "red")
+		return
+	}
 	conn.SetCloseHandler(func(code int, text string) error {
+		log.GTCLog.Infof("signaling server close %d %s", code, text)
 		c.layout.UpdateMessageBar(fmt.Sprintf("websocket connection closed %d %s", code, text), "red")
 		return nil
 	})
@@ -109,7 +117,7 @@ func (c *ClientServer) login() {
 }
 
 func (c *ClientServer) joinRoom(leave, join string) {
-	c.layout.UpdateMessageBar("joining room "+join, "green")
+	c.layout.UpdateMessageBar("joining room "+join, "yellow")
 	c.sendSignalingMsg <- &model.LeaveRoom{
 		RoomId: leave,
 		Name:   c.layout.GetUsername(),
@@ -125,19 +133,28 @@ func (c *ClientServer) joinRoom(leave, join string) {
 
 func (c *ClientServer) readSignalingMessage() {
 	for {
+		if err := c.signalingConn.SetReadDeadline(time.Now().Add(30 * time.Second)); err != nil {
+			log.GTCLog.Error(err)
+			c.layout.UpdateMessageBar(fmt.Sprintf("set read deadline error %v", err), "red")
+		}
 		_, data, err := c.signalingConn.ReadMessage()
 		if err != nil {
 			log.GTCLog.Error(err)
+			c.layout.UpdateMessageBar(fmt.Sprintf("read message error %v", err), "red")
 			break
+		} else {
+			c.readSignalingMsg <- data
 		}
-		c.readSignalingMsg <- data
+
 	}
 }
 
 func (c *ClientServer) sendSignalingMessage(in any) {
+	log.GTCLog.Info("send singaling message")
 	if data, err := c.codecHelper.Encode(in); err == nil {
 		if err := c.signalingConn.WriteMessage(websocket.BinaryMessage, data.ToData().B); err != nil {
 			log.GTCLog.Error(err)
+			c.layout.UpdateMessageBar(fmt.Sprintf("send singaling message error %s", err), "red")
 		}
 	} else {
 		log.GTCLog.Errorf("encode %s %v \n", reflect.TypeOf(in).Elem().Name(), err)
@@ -169,6 +186,11 @@ func (c *ClientServer) updateUserList(users []*model.User) {
 }
 
 func (c *ClientServer) Ping(in *proto.Ping) {
+	log.GTCLog.Println("Ping")
+	if err := c.signalingConn.SetReadDeadline(time.Now().Add(30 * time.Second)); err != nil {
+		log.GTCLog.Error(err)
+		c.layout.UpdateMessageBar(fmt.Sprintf("set read deadline error %v", err), "red")
+	}
 	c.sendSignalingMsg <- &proto.Pong{}
 }
 
