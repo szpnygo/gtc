@@ -22,7 +22,7 @@ or you can download from release
 
 ### Quick Run
 ```bash
-gtc -s wss://gogs.tcodestudio.com
+gtc -s wss://gtc.tcode.ltd
 ```
 
 ### Use your own service
