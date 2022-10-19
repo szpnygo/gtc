@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/metagogs/gogs"
 	"github.com/metagogs/gogs/group"
 	"github.com/metagogs/gogs/gslog"
 	"github.com/metagogs/gogs/session"
@@ -65,7 +66,7 @@ func (l *JoinRoomLogic) Handler(in *model.JoinRoom) {
 		Users:  usersFilted,
 	})
 
-	session.BroadcastMessage(users, &model.JoinRoomNotify{
+	gogs.BroadcastMessage(users, &model.JoinRoomNotify{
 		RoomId: group.GetGroupName(l.ctx),
 		Name:   in.Name,
 		UserId: l.session.ID(),
@@ -77,7 +78,7 @@ func (l *JoinRoomLogic) removeUserFromGroup(g group.Group, name string) {
 	if err := g.RemoveUser(l.ctx, l.session.UID()); err == nil {
 		// broadcast the user left message if user is in the room
 		list := g.GetUsers(l.ctx)
-		session.BroadcastMessage(list, &model.LeaveRoomNotify{
+		gogs.BroadcastMessage(list, &model.LeaveRoomNotify{
 			RoomId: g.GetGroupName(l.ctx),
 			Name:   name,
 			Users:  filterUid(list),
