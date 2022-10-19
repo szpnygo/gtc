@@ -15,7 +15,7 @@ gtc is a p2p terminal chat app, using webrtc. All conversation content will not 
 ### Install
 
 ```bash
-go install github.com/szpnygo/gtc@v0.2.4
+go install github.com/szpnygo/gtc@v0.2.5
 ```
 
 or you can download from release

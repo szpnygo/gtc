@@ -3,6 +3,7 @@ package gtcserver
 import (
 	"context"
 
+	"github.com/metagogs/gogs"
 	"github.com/metagogs/gogs/gslog"
 	"github.com/metagogs/gogs/session"
 	"github.com/szpnygo/gtc/server/internal/svc"
@@ -37,7 +38,7 @@ func (l *LeaveRoomLogic) Handler(in *model.LeaveRoom) {
 	if err := group.RemoveUser(l.ctx, l.session.UID()); err == nil {
 		users := group.GetUsers(l.ctx)
 
-		session.BroadcastMessage(users, &model.LeaveRoomNotify{
+		gogs.BroadcastMessage(users, &model.LeaveRoomNotify{
 			RoomId: group.GetGroupName(l.ctx),
 			UserId: l.session.ID(),
 			Name:   in.Name,

@@ -3,6 +3,7 @@ package gtcserver
 import (
 	"context"
 
+	"github.com/metagogs/gogs"
 	"github.com/metagogs/gogs/gslog"
 	"github.com/metagogs/gogs/session"
 	"github.com/szpnygo/gtc/server/internal/svc"
@@ -27,7 +28,7 @@ func NewOfferLogic(ctx context.Context, svcCtx *svc.ServiceContext, sess *sessio
 }
 
 func (l *OfferLogic) Handler(in *model.Offer) {
-	if sess, err := session.GetSessionByID(in.UserId); err == nil {
+	if sess, err := gogs.GetSessionByID(in.UserId); err == nil {
 		in.UserId = l.session.ID()
 		_ = sess.SendMessage(in)
 	}
