@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/gorilla/websocket v1.5.0
 	github.com/mattn/go-runewidth v0.0.14
-	github.com/metagogs/gogs v0.1.6
+	github.com/metagogs/gogs v0.1.7
 	github.com/nsf/termbox-go v1.1.1
 	github.com/pion/webrtc/v3 v3.1.47
 	github.com/pterm/pterm v0.12.49
