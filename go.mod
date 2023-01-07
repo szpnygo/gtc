@@ -8,7 +8,7 @@ require (
 	github.com/metagogs/gogs v0.1.7
 	github.com/nsf/termbox-go v1.1.1
 	github.com/pion/webrtc/v3 v3.1.50
-	github.com/pterm/pterm v0.12.51
+	github.com/pterm/pterm v0.12.53
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.6.1
 	go.uber.org/zap v1.24.0
@@ -83,7 +83,7 @@ require (
 	golang.org/x/net v0.3.0 // indirect
 	golang.org/x/sys v0.3.0 // indirect
 	golang.org/x/term v0.3.0 // indirect
-	golang.org/x/text v0.5.0 // indirect
+	golang.org/x/text v0.6.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
