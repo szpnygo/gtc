@@ -7,7 +7,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.14
 	github.com/metagogs/gogs v0.1.7
 	github.com/nsf/termbox-go v1.1.1
-	github.com/pion/webrtc/v3 v3.1.54
+	github.com/pion/webrtc/v3 v3.1.56
 	github.com/pterm/pterm v0.12.54
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.6.1
@@ -48,8 +48,8 @@ require (
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
 	github.com/pion/datachannel v1.5.5 // indirect
-	github.com/pion/dtls/v2 v2.2.4 // indirect
-	github.com/pion/ice/v2 v2.3.0 // indirect
+	github.com/pion/dtls/v2 v2.2.6 // indirect
+	github.com/pion/ice/v2 v2.3.1 // indirect
 	github.com/pion/interceptor v0.1.12 // indirect
 	github.com/pion/logging v0.2.2 // indirect
 	github.com/pion/mdns v0.0.7 // indirect
@@ -60,9 +60,9 @@ require (
 	github.com/pion/sdp/v3 v3.0.6 // indirect
 	github.com/pion/srtp/v2 v2.0.12 // indirect
 	github.com/pion/stun v0.4.0 // indirect
-	github.com/pion/transport/v2 v2.0.1 // indirect
+	github.com/pion/transport/v2 v2.0.2 // indirect
 	github.com/pion/turn/v2 v2.1.0 // indirect
-	github.com/pion/udp v0.1.4 // indirect
+	github.com/pion/udp/v2 v2.0.1 // indirect
 	github.com/rivo/uniseg v0.4.2 // indirect
 	github.com/spf13/afero v1.9.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
@@ -80,7 +80,7 @@ require (
 	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/arch v0.0.0-20220927172834-6a65923eb742 // indirect
 	golang.org/x/crypto v0.6.0 // indirect
-	golang.org/x/net v0.6.0 // indirect
+	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/term v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
