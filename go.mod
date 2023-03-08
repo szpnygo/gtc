@@ -7,7 +7,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.14
 	github.com/metagogs/gogs v0.1.7
 	github.com/nsf/termbox-go v1.1.1
-	github.com/pion/webrtc/v3 v3.1.56
+	github.com/pion/webrtc/v3 v3.1.58
 	github.com/pterm/pterm v0.12.54
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.6.1
