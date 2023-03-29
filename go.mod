@@ -8,7 +8,7 @@ require (
 	github.com/metagogs/gogs v0.1.7
 	github.com/nsf/termbox-go v1.1.1
 	github.com/pion/webrtc/v3 v3.1.56
-	github.com/pterm/pterm v0.12.56
+	github.com/pterm/pterm v0.12.57
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.6.1
 	go.uber.org/zap v1.24.0
