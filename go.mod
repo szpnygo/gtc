@@ -9,7 +9,7 @@ require (
 	github.com/nsf/termbox-go v1.1.1
 	github.com/pion/webrtc/v3 v3.2.1
 	github.com/pterm/pterm v0.12.59
-	github.com/sirupsen/logrus v1.9.0
+	github.com/sirupsen/logrus v1.9.1
 	github.com/spf13/cobra v1.7.0
 	go.uber.org/zap v1.24.0
 	google.golang.org/protobuf v1.30.0
