@@ -7,7 +7,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.14
 	github.com/metagogs/gogs v0.1.7
 	github.com/nsf/termbox-go v1.1.1
-	github.com/pion/webrtc/v3 v3.2.3
+	github.com/pion/webrtc/v3 v3.2.4
 	github.com/pterm/pterm v0.12.59
 	github.com/sirupsen/logrus v1.9.2
 	github.com/spf13/cobra v1.7.0
@@ -71,7 +71,7 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.13.0 // indirect
-	github.com/stretchr/testify v1.8.2 // indirect
+	github.com/stretchr/testify v1.8.3 // indirect
 	github.com/subosito/gotenv v1.4.1 // indirect
 	github.com/tidwall/gjson v1.14.3 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
