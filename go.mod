@@ -8,7 +8,7 @@ require (
 	github.com/metagogs/gogs v0.1.7
 	github.com/nsf/termbox-go v1.1.1
 	github.com/pion/webrtc/v3 v3.2.6
-	github.com/pterm/pterm v0.12.59
+	github.com/pterm/pterm v0.12.62
 	github.com/sirupsen/logrus v1.9.2
 	github.com/spf13/cobra v1.7.0
 	go.uber.org/zap v1.24.0
@@ -18,6 +18,7 @@ require (
 require (
 	atomicgo.dev/cursor v0.1.1 // indirect
 	atomicgo.dev/keyboard v0.2.9 // indirect
+	atomicgo.dev/schedule v0.0.2 // indirect
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/bytedance/sonic v1.5.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20220526154910-8bf9453eb81a // indirect
@@ -40,7 +41,7 @@ require (
 	github.com/juju/ratelimit v1.0.2 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.3 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
-	github.com/lithammer/fuzzysearch v1.1.5 // indirect
+	github.com/lithammer/fuzzysearch v1.1.8 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
