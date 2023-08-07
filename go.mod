@@ -8,7 +8,7 @@ require (
 	github.com/metagogs/gogs v0.2.1
 	github.com/nsf/termbox-go v1.1.1
 	github.com/pion/webrtc/v3 v3.2.14
-	github.com/pterm/pterm v0.12.63
+	github.com/pterm/pterm v0.12.65
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.7.0
 	go.uber.org/zap v1.25.0
@@ -16,7 +16,7 @@ require (
 )
 
 require (
-	atomicgo.dev/cursor v0.1.3 // indirect
+	atomicgo.dev/cursor v0.2.0 // indirect
 	atomicgo.dev/keyboard v0.2.9 // indirect
 	atomicgo.dev/schedule v0.0.2 // indirect
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
