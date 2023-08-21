@@ -7,7 +7,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.15
 	github.com/metagogs/gogs v0.2.1
 	github.com/nsf/termbox-go v1.1.1
-	github.com/pion/webrtc/v3 v3.2.15
+	github.com/pion/webrtc/v3 v3.2.17
 	github.com/pterm/pterm v0.12.65
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.7.0
@@ -58,7 +58,7 @@ require (
 	github.com/pion/randutil v0.1.0 // indirect
 	github.com/pion/rtcp v1.2.10 // indirect
 	github.com/pion/rtp v1.8.1 // indirect
-	github.com/pion/sctp v1.8.7 // indirect
+	github.com/pion/sctp v1.8.8 // indirect
 	github.com/pion/sdp/v3 v3.0.6 // indirect
 	github.com/pion/srtp/v2 v2.0.16 // indirect
 	github.com/pion/stun v0.6.1 // indirect
