@@ -3,7 +3,7 @@ module github.com/szpnygo/gtc
 go 1.19
 
 require (
-	github.com/gorilla/websocket v1.5.0
+	github.com/gorilla/websocket v1.5.3
 	github.com/mattn/go-runewidth v0.0.15
 	github.com/metagogs/gogs v0.2.1
 	github.com/nsf/termbox-go v1.1.1
